@@ -19,6 +19,7 @@ import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { BaseTexture } from "@babylonjs/core/Materials/Textures/baseTexture";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { GLTF2Export } from "@babylonjs/serializers/glTF";
 
 import { Pane } from "tweakpane";
@@ -315,9 +316,11 @@ async function startSimplify(cont: AssetContainer) {
     let origVerts: any = 0;
     let vertsTotal: any = 0;
 
+    let deciMeshArray: any = [];
+    let dm: any;
     for (let i = 0; i < arr.length; i++) {
         if ((arr[i] as Mesh).geometry)
-            (arr[i] as Mesh).simplify(
+            dm = (arr[i] as Mesh).simplify(
                 [{ distance: dLod1, quality: 0.5, optimizeMesh: true }],
                 false,
                 SimplificationType.QUADRATIC,
@@ -328,8 +331,11 @@ async function startSimplify(cont: AssetContainer) {
                     const decimatedMesh = (
                         arr[i] as Mesh
                     ).getLODLevelAtDistance(dLod1);
-                    //   console.log("decimatedMesh", decimatedMesh);
 
+                    console.log("DM:", dm);
+
+                    //   console.log("decimatedMesh", decimatedMesh);
+                    deciMeshArray.push(decimatedMesh);
                     console.log(
                         "Simplifying " +
                             arr[i].name +
@@ -357,11 +363,36 @@ async function startSimplify(cont: AssetContainer) {
                             "Optimized from " +
                                 origVerts +
                                 " vertices to " +
-                                vertsTotal
+                                vertsTotal +
+                                " REDUCED: " +
+                                ((vertsTotal / origVerts) * 100).toFixed(1) +
+                                " % "
                         );
                         arr.forEach((m) => {
                             m.renderOverlay = false;
                         });
+                        console.group("Meshes info");
+                        console.log("arr", arr);
+
+                        console.log("DM", deciMeshArray);
+                        console.groupEnd();
+
+                        const newMesh = Mesh.MergeMeshes(
+                            deciMeshArray,
+                            false,
+                            true,
+                            undefined,
+                            false,
+                            false
+                        );
+                        newMesh?.material?.dispose();
+                        console.log(
+                            "newMesh",
+                            newMesh?.getTotalVertices(),
+                            newMesh
+                        );
+
+                        arr[0].setEnabled(false);
                     }
                 }
             );
@@ -372,6 +403,7 @@ async function startSimplify(cont: AssetContainer) {
     //
 
     console.log("DONE!!!");
+
     /*
     (cont.meshes[1] as Mesh).optimizeIndices(function () {
         (cont.meshes[1] as Mesh).simplify(
