@@ -21,6 +21,8 @@ import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { GLTF2Export } from "@babylonjs/serializers/glTF";
 
+import { Pane } from "tweakpane";
+
 // import ColorThief from "colorthief";
 
 import { createUploadButton } from "./createuiCONT";
@@ -35,11 +37,9 @@ export class NiceLoaderCONT {
 
         createUploadButton();
         this.uploadModel(scene, arr);
-
-        let firstFileLoaded = false;
     }
 
-    uploadModel(scene: Scene, arr: Array<ContainerAssetTask>) {
+    uploadModel(scene: Scene, arr: Array<ContainerAssetTask>, pane?: Pane) {
         let assetsManager = new AssetsManager(scene);
         let root: any;
         let modelsArray = arr;
@@ -71,10 +71,22 @@ export class NiceLoaderCONT {
 
             modelsArray.push(task);
 
+            const pane = new Pane();
+            const PARAMS: any = {
+                Meshes: scene.meshes.length.toFixed(),
+                title: "hello",
+                color: "#ff0055",
+            };
+
+            pane.addInput(PARAMS, "Meshes");
+            pane.addInput(PARAMS, "title");
+            pane.addInput(PARAMS, "color");
+
             sb!.onclick = () => {
                 console.log("sb!");
                 startSimplify(task.loadedContainer);
             };
+            //
 
             // getCommonBound(root);
             //   duplicate(task.loadedContainer, 22, 0);
@@ -137,8 +149,6 @@ export class NiceLoaderCONT {
             // analyzeModel(task);
 
             // explodeModel(task, scene);
-
-            //  getCommonColor(scene);
         });
         //
         assetsManager.onTaskErrorObservable.add(function (task) {
