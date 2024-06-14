@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Babylon.js webpack starter-kit</title>
+  <title>Asteroid</title>
   <meta name="description" content="A sample project based on Babylon.js, written in typescript, built with webpack">
-  <meta name="author" content="Raanan Weber">
+  <meta name="author" content="">
     <style>
       html,
       body {
@@ -21,10 +21,35 @@
         height: 100%;
         touch-action: none;
       }
+      #top{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: #ffffff;
+        text-align: center;
+        line-height: 20px;
+        width: 100%;
+        bottom: 0;
+      }
+      #top > div{
+        background-color: #282828;
+        width: 300px;
+        padding: 16px;
+      }
     </style>
   </head>
 
   <body>
+    <div id ="top">
+      <div id = "warehouse">Warehouse</div>
+      <div id = "drone">Drone</div>
+      <div id = "building">Building
+        <div id="buildingState">build1</div>
+      </div>
+      
+    </div>
     <canvas id="renderCanvas" touch-action="none"></canvas>
   </body>
 

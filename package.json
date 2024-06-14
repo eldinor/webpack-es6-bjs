@@ -11,11 +11,13 @@
     "@babylonjs/loaders": "^7.0.0",
     "@babylonjs/materials": "^7.0.0",
     "ammo.js": "github:kripken/ammo.js",
-    "recast-detour": "^1.6.1"
+    "recast-detour": "^1.6.1",
+    "yuka": "^0.7.8"
   },
   "devDependencies": {
     "@playwright/test": "^1.31.1",
     "@types/jest": "^29.5.1",
+    "@types/yuka": "^0.7.4",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12",
     "clean-webpack-plugin": "^4.0.0",
