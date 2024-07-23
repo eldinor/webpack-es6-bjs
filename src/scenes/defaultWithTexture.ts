@@ -18,6 +18,9 @@ import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Culling/ray";
 import { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
 
+import { Simploder } from "./simploder";
+import { Tools } from "@babylonjs/core";
+
 export class DefaultSceneWithTexture implements CreateSceneClass {
     createScene = async (
         engine: AbstractEngine,
@@ -67,11 +70,7 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         sphere.position.y = 1;
 
         // Our built-in 'ground' shape.
-        const ground = CreateGround(
-            "ground",
-            { width: 6, height: 6 },
-            scene
-        );
+        const ground = CreateGround("ground", { width: 6, height: 6 }, scene);
 
         // Load a texture to be used as the ground material
         const groundMaterial = new StandardMaterial("ground material", scene);
@@ -88,13 +87,37 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         light.intensity = 0.5;
         light.position.y = 10;
 
-        const shadowGenerator = new ShadowGenerator(512, light)
+        const shadowGenerator = new ShadowGenerator(512, light);
         shadowGenerator.useBlurExponentialShadowMap = true;
         shadowGenerator.blurScale = 2;
         shadowGenerator.setDarkness(0.2);
 
         shadowGenerator.getShadowMap()!.renderList!.push(sphere);
 
+        const assetArrayBuffer = await Tools.LoadFileAsync(
+            // "https://raw.githubusercontent.com/eldinor/ForBJS/master/yukae.glb",
+            "https://raw.githubusercontent.com/eldinor/ForBJS/master/alien_probe.glb",
+            //     "https://raw.githubusercontent.com/eldinor/ForBJS/master/ccity_building_set_1.glb",
+            //   "model/cargoship-opt.glb",
+            //  "model/tunnel1-opt.glb",
+          //  "https://assets.babylonjs.com/meshes/flightHelmet.glb",
+
+            true
+        );
+
+        const simploder = new Simploder(assetArrayBuffer);
+        console.log(simploder);
+
+        /*
+        const worker = new Worker(new URL("./worker.js", import.meta.url));
+        worker.phe Answer to the Ultimate Question of Life, The Universe, and Everything.",
+        });ostMessage({
+            question:
+                "T
+        worker.onmessage = ({ data: { answer } }) => {
+            console.log(answer);
+        };
+*/
         return scene;
     };
 }
