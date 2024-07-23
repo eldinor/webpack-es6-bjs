@@ -17,6 +17,8 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Culling/ray";
 import { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
+import { Color3, Color4 } from "@babylonjs/core";
+import { HemisphericLight } from "@babylonjs/core/Lights";
 
 export class DefaultSceneWithTexture implements CreateSceneClass {
     createScene = async (
@@ -67,36 +69,60 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         sphere.position.y = 1;
 
         // Our built-in 'ground' shape.
-        const ground = CreateGround(
-            "ground",
-            { width: 6, height: 6 },
-            scene
-        );
+        const ground = CreateGround("ground", { width: 6, height: 6 }, scene);
 
         // Load a texture to be used as the ground material
         const groundMaterial = new StandardMaterial("ground material", scene);
-        groundMaterial.diffuseTexture = new Texture(grassTextureUrl, scene);
+        // groundMaterial.diffuseTexture = new Texture(grassTextureUrl, scene);
 
         ground.material = groundMaterial;
         ground.receiveShadows = true;
 
-        const light = new DirectionalLight(
-            "light",
-            new Vector3(0, -1, 1),
-            scene
+        const light = new HemisphericLight("light", new Vector3(0, 1, 0));
+        light.intensity = 0.6;
+
+        const averageColor = await get_average_rgb(
+            "https://playground.babylonjs.com/textures/lava/lavatile.jpg"
         );
-        light.intensity = 0.5;
-        light.position.y = 10;
 
-        const shadowGenerator = new ShadowGenerator(512, light)
-        shadowGenerator.useBlurExponentialShadowMap = true;
-        shadowGenerator.blurScale = 2;
-        shadowGenerator.setDarkness(0.2);
+        console.log(averageColor);
 
-        shadowGenerator.getShadowMap()!.renderList!.push(sphere);
+        const redChannel = averageColor[0];
+        console.log(redChannel);
+        /*
+        (ground.material as StandardMaterial).diffuseColor = new Color3(
+            averageColor[0],
+            averageColor[1],
+            averageColor[2]
+        );
+        sphere.material = ground.material;
+        */
+        scene.clearColor = new Color4(
+            averageColor[0] / 255,
+            averageColor[1] / 255,
+            averageColor[2] / 255,
+            1
+        );
 
         return scene;
     };
 }
 
 export default new DefaultSceneWithTexture();
+
+export async function get_average_rgb(src: string): Promise<Uint8ClampedArray> {
+    /* https://stackoverflow.com/questions/2541481/get-average-color-of-image-via-javascript */
+    return new Promise((resolve) => {
+        let context = document.createElement("canvas").getContext("2d");
+        context!.imageSmoothingEnabled = true;
+
+        let img = new Image();
+        img.src = src;
+        img.crossOrigin = "";
+
+        img.onload = () => {
+            context!.drawImage(img, 0, 0, 1, 1);
+            resolve(context!.getImageData(0, 0, 1, 1).data.slice(0, 3));
+        };
+    });
+}
