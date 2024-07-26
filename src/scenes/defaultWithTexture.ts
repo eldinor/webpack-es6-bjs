@@ -17,6 +17,10 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Culling/ray";
 import { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
+import { HemisphericLight } from "@babylonjs/core";
+import { Simploder } from "./simploder";
+
+import "@babylonjs/loaders";
 
 export class DefaultSceneWithTexture implements CreateSceneClass {
     createScene = async (
@@ -28,17 +32,17 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
 
         // Uncomment to load the inspector (debugging) asynchronously
 
-        // void Promise.all([
-        //     import("@babylonjs/core/Debug/debugLayer"),
-        //     import("@babylonjs/inspector"),
-        // ]).then((_values) => {
-        //     console.log(_values);
-        //     scene.debugLayer.show({
-        //         handleResize: true,
-        //         overlay: true,
-        //         globalRoot: document.getElementById("#root") || undefined,
-        //     });
-        // });
+        void Promise.all([
+            import("@babylonjs/core/Debug/debugLayer"),
+            import("@babylonjs/inspector"),
+        ]).then((_values) => {
+            //   console.log(_values);
+            scene.debugLayer.show({
+                handleResize: true,
+                overlay: true,
+                globalRoot: document.getElementById("#root") || undefined,
+            });
+        });
 
         // This creates and positions a free camera (non-mesh)
         const camera = new ArcRotateCamera(
@@ -56,22 +60,8 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         // This attaches the camera to the canvas
         camera.attachControl(canvas, true);
 
-        // Our built-in 'sphere' shape.
-        const sphere = CreateSphere(
-            "sphere",
-            { diameter: 2, segments: 32 },
-            scene
-        );
-
-        // Move the sphere upward 1/2 its height
-        sphere.position.y = 1;
-
         // Our built-in 'ground' shape.
-        const ground = CreateGround(
-            "ground",
-            { width: 6, height: 6 },
-            scene
-        );
+        const ground = CreateGround("ground", { width: 6, height: 6 }, scene);
 
         // Load a texture to be used as the ground material
         const groundMaterial = new StandardMaterial("ground material", scene);
@@ -80,21 +70,45 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         ground.material = groundMaterial;
         ground.receiveShadows = true;
 
-        const light = new DirectionalLight(
+        const light = new HemisphericLight(
             "light",
-            new Vector3(0, -1, 1),
+            new Vector3(0, 1, 0),
             scene
         );
         light.intensity = 0.5;
-        light.position.y = 10;
+        //
+        //
+        const simploder = new Simploder();
+        console.log(simploder);
+        //
+        const loaded = await simploder.load(
+            "https://raw.githubusercontent.com/eldinor/ForBJS/master/alien_probe.glb"
+        );
 
-        const shadowGenerator = new ShadowGenerator(512, light)
-        shadowGenerator.useBlurExponentialShadowMap = true;
-        shadowGenerator.blurScale = 2;
-        shadowGenerator.setDarkness(0.2);
+        console.log(loaded);
+        const optimized = await simploder.optimize(loaded);
+        //
+        console.log("optimized ", optimized);
+        console.log(simploder.toBinaryArray(optimized));
+        //
+        //  const compressed = await simploder.textureCompress(optimized);
+        //
+        //  console.log(compressed);
 
-        shadowGenerator.getShadowMap()!.renderList!.push(sphere);
+        //  const toBinary = await simploder.toBinaryArray(compressed);
+        const toBinary = await simploder.toBinaryArray(optimized);
 
+        console.log(toBinary);
+        const container = await simploder.loadFromBinary(toBinary, scene);
+        //
+        const mergedOpt = simploder.mergeAll(container);
+
+        console.log(mergedOpt);
+        //
+        //  container.addAllToScene();
+        //  container.dispose();
+        //
+        //
         return scene;
     };
 }
