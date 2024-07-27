@@ -8,9 +8,10 @@
     "@babylonjs/gui-editor": "^7.0.0",
     "@babylonjs/havok": "^1.0.0",
     "@babylonjs/inspector": "^7.0.0",
-    "@babylonjs/loaders": "^7.0.0",
+    "@babylonjs/loaders": "^7.17.2",
     "@babylonjs/materials": "^7.0.0",
     "ammo.js": "github:kripken/ammo.js",
+    "mistreevous": "^4.1.1",
     "recast-detour": "^1.6.1"
   },
   "devDependencies": {

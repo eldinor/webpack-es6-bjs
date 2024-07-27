@@ -17,6 +17,8 @@ import { ShadowGenerator } from "@babylonjs/core/Lights/Shadows/shadowGenerator"
 import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Culling/ray";
 import { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
+import "@babylonjs/loaders/";
+import { SceneLoader } from "@babylonjs/core";
 
 export class DefaultSceneWithTexture implements CreateSceneClass {
     createScene = async (
@@ -25,6 +27,10 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
     ): Promise<Scene> => {
         // This creates a basic Babylon Scene object (non-mesh)
         const scene = new Scene(engine);
+        scene.createDefaultEnvironment({
+            createGround: false,
+            createSkybox: false,
+        });
 
         // Uncomment to load the inspector (debugging) asynchronously
 
@@ -65,13 +71,10 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
 
         // Move the sphere upward 1/2 its height
         sphere.position.y = 1;
+        sphere.visibility = 0;
 
         // Our built-in 'ground' shape.
-        const ground = CreateGround(
-            "ground",
-            { width: 6, height: 6 },
-            scene
-        );
+        const ground = CreateGround("ground", { width: 6, height: 6 }, scene);
 
         // Load a texture to be used as the ground material
         const groundMaterial = new StandardMaterial("ground material", scene);
@@ -88,12 +91,18 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         light.intensity = 0.5;
         light.position.y = 10;
 
-        const shadowGenerator = new ShadowGenerator(512, light)
+        const shadowGenerator = new ShadowGenerator(512, light);
         shadowGenerator.useBlurExponentialShadowMap = true;
         shadowGenerator.blurScale = 2;
         shadowGenerator.setDarkness(0.2);
 
         shadowGenerator.getShadowMap()!.renderList!.push(sphere);
+
+        SceneLoader.ImportMeshAsync(
+            "",
+            "https://raw.githubusercontent.com/eldinor/ForBJS/master/",
+            "avatar-with-animations-opt.glb"
+        );
 
         return scene;
     };
