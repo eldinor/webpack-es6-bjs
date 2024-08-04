@@ -18,6 +18,11 @@ import "@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent";
 import "@babylonjs/core/Culling/ray";
 import { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
 
+// App.tsx
+//  worker-url is a webpack plugin that is used to obtain the URL of a worker instead of a worker instance.
+import { WorkerUrl } from "worker-url";
+import workerpool from "workerpool";
+
 export class DefaultSceneWithTexture implements CreateSceneClass {
     createScene = async (
         engine: AbstractEngine,
@@ -67,11 +72,7 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         sphere.position.y = 1;
 
         // Our built-in 'ground' shape.
-        const ground = CreateGround(
-            "ground",
-            { width: 6, height: 6 },
-            scene
-        );
+        const ground = CreateGround("ground", { width: 6, height: 6 }, scene);
 
         // Load a texture to be used as the ground material
         const groundMaterial = new StandardMaterial("ground material", scene);
@@ -88,13 +89,23 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         light.intensity = 0.5;
         light.position.y = 10;
 
-        const shadowGenerator = new ShadowGenerator(512, light)
+        const shadowGenerator = new ShadowGenerator(512, light);
         shadowGenerator.useBlurExponentialShadowMap = true;
         shadowGenerator.blurScale = 2;
         shadowGenerator.setDarkness(0.2);
 
         shadowGenerator.getShadowMap()!.renderList!.push(sphere);
-
+        //
+        //
+        //
+        const WorkerURL = new WorkerUrl(
+            new URL("./worker.ts", import.meta.url)
+        );
+        const pool = workerpool.pool(WorkerURL.toString(), {
+            maxWorkers: 3,
+        });
+        //
+        //
         return scene;
     };
 }
