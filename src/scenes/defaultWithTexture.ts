@@ -92,15 +92,15 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
         shadowGenerator.blurScale = 2;
         shadowGenerator.setDarkness(0.2);
 
-        shadowGenerator.getShadowMap()!.renderList!.push(sphere);
+        //     shadowGenerator.getShadowMap()!.renderList!.push(sphere);
 
         const assetArrayBuffer = await Tools.LoadFileAsync(
             // "https://raw.githubusercontent.com/eldinor/ForBJS/master/yukae.glb",
-            "https://raw.githubusercontent.com/eldinor/ForBJS/master/alien_probe.glb",
+            // "https://raw.githubusercontent.com/eldinor/ForBJS/master/alien_probe.glb",
             //     "https://raw.githubusercontent.com/eldinor/ForBJS/master/ccity_building_set_1.glb",
             //   "model/cargoship-opt.glb",
             //  "model/tunnel1-opt.glb",
-          //  "https://assets.babylonjs.com/meshes/flightHelmet.glb",
+            "https://assets.babylonjs.com/meshes/flightHelmet.glb",
 
             true
         );
