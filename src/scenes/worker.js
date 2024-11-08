@@ -9,6 +9,7 @@ import {
     quantize,
     flatten,
     join,
+    textureCompress,
 } from "@gltf-transform/functions";
 import {
     MeshoptEncoder,
@@ -59,7 +60,8 @@ onmessage = async (e) => {
         weld({}),
         simplify({ simplifier: MeshoptSimplifier, error: 0.01 }),
         reorder({ encoder: MeshoptEncoder }),
-        quantize()
+        quantize(),
+       textureCompress({resize:[512,512]})
     );
 
     //
@@ -69,8 +71,8 @@ onmessage = async (e) => {
             " seconds"
     );
     //
-    console.log(doc.getRoot().listTextures())
-    console.log(doc.getRoot().listMaterials())
+  //  console.log(doc.getRoot().listTextures())
+    //console.log(doc.getRoot().listMaterials())
 
     //
     const glb = await io.writeBinary(doc);
