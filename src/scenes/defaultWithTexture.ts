@@ -96,11 +96,11 @@ export class DefaultSceneWithTexture implements CreateSceneClass {
 
         const assetArrayBuffer = await Tools.LoadFileAsync(
             // "https://raw.githubusercontent.com/eldinor/ForBJS/master/yukae.glb",
-            // "https://raw.githubusercontent.com/eldinor/ForBJS/master/alien_probe.glb",
+            "https://raw.githubusercontent.com/eldinor/ForBJS/master/alien_probe.glb",
             //     "https://raw.githubusercontent.com/eldinor/ForBJS/master/ccity_building_set_1.glb",
             //   "model/cargoship-opt.glb",
             //  "model/tunnel1-opt.glb",
-            "https://assets.babylonjs.com/meshes/flightHelmet.glb",
+            //  "https://assets.babylonjs.com/meshes/flightHelmet.glb",
 
             true
         );

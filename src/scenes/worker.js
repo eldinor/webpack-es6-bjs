@@ -10,6 +10,7 @@ import {
     flatten,
     join,
     textureCompress,
+    textureResize,
 } from "@gltf-transform/functions";
 import {
     MeshoptEncoder,
@@ -61,8 +62,15 @@ onmessage = async (e) => {
         simplify({ simplifier: MeshoptSimplifier, error: 0.01 }),
         reorder({ encoder: MeshoptEncoder }),
         quantize(),
-       textureCompress({resize:[512,512]})
+  //  textureCompress({resize:[512,512]})
+      // textureResize({size:[512,512]})
     );
+    
+    await doc.transform(
+      	textureCompress({ targetFormat: 'webp', resize: [1024, 1024] })
+       );
+
+
 
     //
     console.log(

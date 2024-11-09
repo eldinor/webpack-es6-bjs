@@ -10,9 +10,9 @@
     "@babylonjs/inspector": "^7.0.0",
     "@babylonjs/loaders": "^7.0.0",
     "@babylonjs/materials": "^7.0.0",
-    "@gltf-transform/core": "^3.7.5",
-    "@gltf-transform/extensions": "^3.7.5",
-    "@gltf-transform/functions": "^3.7.5",
+    "@gltf-transform/core": "^4.1.0",
+    "@gltf-transform/extensions": "4.1.0",
+    "@gltf-transform/functions": "4.1.0",
     "ammo.js": "github:kripken/ammo.js",
     "meshoptimizer": "^0.21.0",
     "recast-detour": "^1.6.1"
